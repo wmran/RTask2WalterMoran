@@ -1,0 +1,135 @@
+# Desarrollar un proyecto completo de ciencia de datos utilizando R
+
+# ======================================================================================================================================================
+# 1. Elección del conjunto de datos
+# ======================================================================================================================================================
+
+# Selecciona un conjunto de datos que despierte tu interés. Pueden ser datos provenientes cualquiera área, 
+# como salud, finanzas, deportes, medio ambiente, etc. Recuerda que el conjunto de datos debe ser suficientemente 
+# grande para realizar un análisis significativo (mínimo 1000 filas y varias variables) y debe estar disponible 
+# en un formato legible por python, como csv, json, excel, etc. Puedes encontrar conjuntos de datos en plataformas 
+# como kaggle, uci machine learning repository, o google dataset search.
+
+# El conjunto de de datos fue tomado de la Fuente de Kaggle: https://www.kaggle.com/datasets/waqi786/remote-work-and-mental-health/data
+
+# Dataset: Remote Work & Mental Health
+
+# La elección del dataset se realizó debido a que el trabajo remoto es algo que en la actualidad aun nos deja mucho 
+# de que hablar y pensar, el trabajo remoto es algo que ya existía antes de Pandemia, pero se veia que avanzaría de 
+# manera lenta y medida, pero dado a las condiciones sanitarias tomadas obligatoriamente debido al COVID, el crecimiento 
+# de esta forma de trabajo se vio incrementada masivamente.
+# 
+# Muchos personas cambiaron por completo su forma de vida, pasaron por un proceso de adaptación abrupto al Trabajo 
+# remoto, cambiando sus costumbres, sus hábitos y su rutina.
+# 
+# Todos hablan acerca de los beneficios que trae consigo el trabajo remoto, pero no muchos hablan de las enfermedades 
+# que nacieron y se incrementaron con esta nueva modalidad, aun en la actualidad siguen naciendo nuevos padecimientos 
+# que nacieron a partir del trabajo remoto, volviendose así ademas de un beneficio para la sociedad, tambien se volvio 
+# Perjudicial para la salud si no se toman en cuenta muchos aspectos cuando trabajamos desde casa.
+
+
+
+#Importación y lectura del dataset Impact_of_Remote_Work_on_Mental_Health.csv
+setwd("C:/Users/wmran/Desktop/HL Developers/GIT/Machine Learning/MachineLearningWMran/Tarea R/RTask2WalterMoran/Data")
+df <- read.csv("Impact_of_Remote_Work_on_Mental_Health.csv")
+
+# Visualización de las primeras 5 Filas del dataframe
+head(df)
+
+# Visualización de las ultimas 5 Filas del dataframe
+tail(df)
+
+# Cantidad de Filas y Columnas del Dataframe
+dim(df)
+
+# Columnas del Dataframe
+colnames(df)
+
+# Información de Dataframe
+sapply(df, class)
+
+# ======================================================================================================================================================
+# 2. Limpieza y transformación de los datos
+# ======================================================================================================================================================
+
+# Una vez que tengas el conjunto de datos, el siguiente paso es limpiarlo y transformarlo para que esté listo para el 
+# análisis. Recuerda verificar las variables, gestionar los valores faltantes, corregir errores y similares
+
+# Limpieza y transformación de los datos
+summary(df)
+
+# Extracción de columnas a utilizar en nuestro EDA
+df <- df[, c("Employee_ID"
+             ,"Age"
+             ,"Gender"
+             ,"Job_Role"
+             ,"Industry"
+             ,"Years_of_Experience"
+             ,"Work_Location"
+             ,"Hours_Worked_Per_Week"
+             ,"Number_of_Virtual_Meetings"
+             ,"Stress_Level"
+             ,"Mental_Health_Condition"
+             ,"Access_to_Mental_Health_Resources"
+             ,"Productivity_Change"
+             ,"Satisfaction_with_Remote_Work"
+             ,"Physical_Activity")]
+
+# Cantidad de Filas y Columnas del Dataframe
+dim(df)
+
+# Renombrar las columnas
+names(df) <- c("IDEmpleado", "Edad", "Genero", "Rol", "Industria", 
+               "AniosExperiencia", "Locacion", "HorasTrabajadasSemana", 
+               "CantidadReunionesVirtuales", "NivelEstres", 
+               "CondicionMental", "AccesoRecursosSaludMental", 
+               "CambioProductividad", "SatisfaccionTrabajoRemoto", 
+               "ActividadFisica")
+
+# Columnas del Dataframe
+colnames(df)
+
+# Visualización de las primeras 5 Filas del dataframe
+head(df)
+
+# Limpieza de Nulos en Dataset
+df_limpio <- na.omit(df)
+
+# Creando nuevo archivo CSV con la data limpia y con las columnas las cuales tomaremos en cuenta para nuestro calculo
+write.csv(df_limpio, "Impact_of_Remote_Work_on_Mental_Health_train_test.csv", row.names = FALSE)
+
+# ======================================================================================================================================================
+# 3. Análisis exploratorio de datos (EDA)
+# ======================================================================================================================================================
+
+# Ejecuta el análisis exploratorio es esencial para comprender mejor la estructura, las relaciones y las características 
+# clave del conjunto de datos generando un resumen estadístico de las variables para identificar su distribución, medias, 
+# medianas, desviaciones estándar, etc. Recuerda también identificar patrones y tendencias dentro de los datos.
+
+df <- read.csv("Impact_of_Remote_Work_on_Mental_Health_train_test.csv")
+
+summary(df)
+
+library(ggplot2)
+
+# Histograma de 'NivelEstres'
+ggplot(df, aes(x = NivelEstres)) + 
+  geom_bar(fill = "blue", color = "black") + 
+  theme_minimal() + 
+  labs(title = "Distribución de Niveles de Estrés", x = "Nivel de Estrés", y = "Frecuencia")
+
+# Gráfico de barras de la cantidad de personas por nivel de estrés
+stress_count <- table(df$NivelEstres)
+barplot(stress_count, main = "Cantidad de Personas por Nivel de Estrés", 
+        xlab = "Nivel de Estrés", ylab = "Cantidad de Personas", col = "lightblue")
+
+# Filtrar el DataFrame para trabajo remoto
+remote_df <- df[df$Locacion == "Remote",]
+
+# Contar la cantidad de personas por género
+remote_work_count <- table(remote_df$Genero)
+
+# Graficar
+barplot(remote_work_count, main = "Cantidad de Personas que Realizan Trabajo Remoto según Género", 
+        xlab = "Género", ylab = "Cantidad de Personas", col = "lightblue")
+
